@@ -70,7 +70,7 @@ str(activity)
 ##   .. ..- attr(*, "format")= chr "h:m:s"
 ```
 
-It would be possible to work with the variable interval as intergers but when plotting it in a time series the x axis would be out of scale making the visualization not as clear as it could be.So, the package chron was used in order to extrac the time at which each interval was acquire.
+It would be possible to work with the variable interval as integers but when plotting it in a time series the x axis would be out of scale making the visualization not as clear as it could be.So, the package chron was used in order to extract the time at which each interval was acquire.
 
 ## What is mean total number of steps taken per day?
 
@@ -84,6 +84,11 @@ totalByDay <- activity %>%
       group_by(date) %>%
       summarize(steps = sum(steps))
 
+meanSteps <- format(mean(totalByDay$steps, na.rm = TRUE),
+                    scientific = FALSE, nsmall = 2)
+medianSteps <- format(median(totalByDay$steps, na.rm = TRUE),
+                      scientific = FALSE, nsmall = 2)
+
 ggplot(totalByDay, aes(x = steps)) + 
       geom_histogram(col = "white", fill = "blue", na.rm = TRUE, 
                      binwidth = 1000, center = 500) + 
@@ -92,7 +97,9 @@ ggplot(totalByDay, aes(x = steps)) +
       ggtitle("Histogram of number of steps per day") 
 ```
 
-![](analysisReport_files/figure-html/total steps per day-1.png)<!-- -->
+![](PA1_template_files/figure-html/total steps per day-1.png)<!-- -->
+
+The mean number of steps taken per day is **10766.19** and the median is **10765**.
 
 ## What is the average daily activity pattern?
 
@@ -104,6 +111,9 @@ avgByInt <- activity %>%
       group_by(interval) %>%
       summarize(steps = mean(steps, na.rm = TRUE))
 
+maxSteps <- max(avgByInt$steps)
+maxInt <- format(avgByInt$interval[avgByInt$steps == maxSteps], "h:m:s")
+
 ggplot(avgByInt, aes(x = interval, y = steps)) + 
       geom_line() +
       scale_x_chron(name = "Time of the day", format = "%H:%M") +
@@ -111,7 +121,9 @@ ggplot(avgByInt, aes(x = interval, y = steps)) +
       ggtitle("Average daily activity patten")
 ```
 
-![](analysisReport_files/figure-html/average steps per day-1.png)<!-- -->
+![](PA1_template_files/figure-html/average steps per day-1.png)<!-- -->
+
+The maximum average number of steps by interval is **08:35:00** with **206.1698113** steps
 
 ## Imputing missing values
 
@@ -126,7 +138,7 @@ sum(is.na(activity$steps))
 ## [1] 2304
 ```
 
-To define a good strategy for filling missing values, find out where the missing values occour and try to find some pattern.
+To define a good strategy for filling missing values, find out where the missing values occur and try to find some pattern.
 
 
 ```r
@@ -148,6 +160,37 @@ The command above shows that every time a missing data appear it means that that
 fillActivity <- activity
 fillActivity $steps[is.na(activity$steps)] <- avgByInt$steps
 ```
+
+To verify the impact of the imputed data on the original dataset a histogram was made to compare both distributions
+
+
+```r
+fillTotalByDay <- fillActivity %>% 
+      group_by(date) %>%
+      summarise(steps = sum(steps))
+
+meanSteps <- format(mean(fillTotalByDay$steps, na.rm = TRUE), 
+                    scientific = FALSE, nsmall = 2)
+medianSteps <- format(median(fillTotalByDay$steps, na.rm = TRUE), 
+                      scientific = FALSE, nsmall = 2)
+
+both <- rbind(mutate(activity, origin = "Original"), 
+              mutate(fillActivity, origin = "Filled")) %>%
+      group_by(date, origin) %>%
+      summarise(steps = sum(steps))
+
+ggplot(both, aes(x = steps)) + 
+      geom_histogram(col = "white", fill = "blue", na.rm = TRUE, 
+                     binwidth = 1000, center = 500) +
+      facet_grid(origin ~ .) +
+      scale_x_continuous(name = "Number of steps in a day") +
+      scale_y_continuous(name = "Count of days", breaks = seq(0, 18, by = 2)) +
+      ggtitle("Histogram of number of steps per day") 
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+It is possible to by the histograms above that all the missing days where added in the mean part do the distribution, which was expected as the inputting strategy was done based on the average daily pattern. By this, it is possible to conclude that this was a good strategy as the mean continue to be **10766.19** and the median had a slight change to **10766.19**.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -177,11 +220,10 @@ ggplot(avgByIntDayClass, aes(x = interval, y = steps)) +
       ggtitle("Average daily activity patten by day class")
 ```
 
-![](analysisReport_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 ## Returning to the previous timezone
 
-
-```r
+```{r}:
 Sys.setenv(TZ = curTZ)
 ```

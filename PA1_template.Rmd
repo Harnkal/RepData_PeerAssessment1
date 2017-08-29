@@ -67,7 +67,7 @@ To answer this question the dplyr package was used to summarize the number of st
 
 It was decided that during the summarization the NAs would not be removed as it would cause the day with no available data acquired to be considered as zero which is misleading.
 
-```{r total steps per day}
+```{r}
 totalByDay <- activity %>%
       group_by(date) %>%
       summarize(steps = sum(steps))
@@ -91,7 +91,7 @@ The mean number of steps taken per day is **`r meanSteps`** and the median is **
 
 In this section, a summarization was made to extract the average number of steps in each interval. The results are shown in the time series plot below.
 
-```{r average steps per day}
+```{r}
 avgByInt <- activity %>%
       group_by(interval) %>%
       summarize(steps = mean(steps, na.rm = TRUE))
@@ -107,7 +107,7 @@ ggplot(avgByInt, aes(x = interval, y = steps)) +
 
 ```
 
-The maximum average number of steps by interval is **`r maxInt`** with **`r maxSteps`** steps
+The interval with the maximum average number of steps is **`r maxInt`** with **`r maxSteps`** steps
 
 ## Imputing missing values
 

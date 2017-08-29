@@ -97,7 +97,7 @@ ggplot(totalByDay, aes(x = steps)) +
       ggtitle("Histogram of number of steps per day") 
 ```
 
-![](PA1_template_files/figure-html/total steps per day-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
 
 The mean number of steps taken per day is **10766.19** and the median is **10765**.
 
@@ -121,9 +121,9 @@ ggplot(avgByInt, aes(x = interval, y = steps)) +
       ggtitle("Average daily activity patten")
 ```
 
-![](PA1_template_files/figure-html/average steps per day-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
-The maximum average number of steps by interval is **08:35:00** with **206.1698113** steps
+The interval with the maximum average number of steps is **08:35:00** with **206.1698113** steps
 
 ## Imputing missing values
 
@@ -188,7 +188,7 @@ ggplot(both, aes(x = steps)) +
       ggtitle("Histogram of number of steps per day") 
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 It is possible to by the histograms above that all the missing days where added in the mean part do the distribution, which was expected as the inputting strategy was done based on the average daily pattern. By this, it is possible to conclude that this was a good strategy as the mean continue to be **10766.19** and the median had a slight change to **10766.19**.
 
@@ -220,7 +220,7 @@ ggplot(avgByIntDayClass, aes(x = interval, y = steps)) +
       ggtitle("Average daily activity patten by day class")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 ## Returning to the previous timezone
 
